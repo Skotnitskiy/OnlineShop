@@ -2,7 +2,36 @@
 {% block title %}Cart{% endblock %}
 
 {% block content %}
-    {% for product in products %}
-        {{ product.title }} <br>
-    {% endfor %}
+    <table class="table table-bordered table-hover" xmlns="http://www.w3.org/1999/html">
+        <thead class="thead-light">
+        <tr>
+            <th >Product</th>
+            <th>Quantity</th>
+            <th>Cost</th>
+            <th>Price</th>
+        </tr>
+        </thead>
+        {% for order in orders %}
+            <tr class=".table-hover">
+                <td>
+                    {{ order.title }}
+                </td>
+                <td>
+                    x{{ order.quantity }}
+                </td>
+                <td>
+                    {{ order.cost }}
+                </td>
+                <td>
+                    {{ order.price }}
+                </td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th>TOTAL:</th>
+            <td></td>
+            <th>{{ total }}</th>
+            <td></td>
+        </tr>
+    </table>
 {% endblock %}

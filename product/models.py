@@ -33,3 +33,21 @@ class Product(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Order(models.Model):
+    product_id = models.IntegerField()
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    price = models.FloatField(default=0.0)
+    quantity = models.IntegerField(default=1)
+
+    @property
+    def cost(self):
+        return self.price * int(self.quantity)
+
+    def __str__(self):
+        return self.title
+
+    def __radd__(self, other):
+        return other + self.cost

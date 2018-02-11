@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.contrib import messages
-from product.models import Product, Subcategory
+from product.models import Product, Subcategory, Order
 
 
 def index(request):
@@ -27,12 +27,9 @@ def product_details(request, id):
 def add_product_to_session(request, p_id):
     request.session.modified = True
     if 'products' not in request.session:
-        request.session['products'] = []
-    if p_id not in request.session['products']:
-        request.session['products'].append(p_id)
-        messages.info(request, 'Added to cart!')
-    else:
-        messages.info(request, 'Already exists!')
+        request.session['products'] = {}
+    request.session['products'].update({p_id: request.POST['quantity']})
+    messages.info(request, 'Added to cart!')
 
 
 def cart(request):
@@ -43,10 +40,15 @@ def cart(request):
         return HttpResponseRedirect(next_page)
     else:
         if request.session.get('products'):
-            products = Product.objects.filter(
-                id__in=request.session['products']
-            )
-            return render(request, 'product/cart.html',
-                          {'products': products})
+            ses_products = request.session['products']
+            orders = []
+            for s_product_id in ses_products:
+                product = Product.objects.get(pk=s_product_id)
+                order = Order(product_id=product.id, title=product.title, description=product.description,
+                              price=product.price, quantity=ses_products[s_product_id])
+                orders.append(order)
+            print()
+
+            return render(request, 'product/cart.html', {'orders': orders, 'total': sum(orders)})
         else:
             return render(request, 'product/cart.html')

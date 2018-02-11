@@ -9,7 +9,7 @@
         {% csrf_token %}
         <input type="hidden" name="next" value="{{ request.path }}">
         <input type="hidden" name="product_id" value="{{ product.id }}">
-
+        <input title="Quantity" type="number" name="quantity" min="1">
         <button type="submit">Add to cart!</button>
     </form>
 {% endblock %}
