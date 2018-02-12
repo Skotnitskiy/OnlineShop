@@ -12,18 +12,29 @@
         </tr>
         </thead>
         {% for order in orders %}
-            <tr class=".table-hover">
+            <tr>
                 <td>
                     {{ order.title }}
                 </td>
                 <td>
-                    x{{ order.quantity }}
+                    <form action="{% url 'product:add-to-cart' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="p_id" value="{{ order.product_id }}">
+                        <input type="number" title="Quantity" min="1" class="form-control"
+                               name="quantity" value="{{ order.quantity }}">
+                        <button type="submit" class="btn-success">Update</button>
+                    </form>
                 </td>
                 <td>
                     {{ order.cost }}
                 </td>
                 <td>
                     {{ order.price }}
+                    <form action="{% url 'product:delete-from-cart' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="p_id" value="{{ order.product_id }}">
+                        <button type="submit" class="btn-danger">-</button>
+                    </form>
                 </td>
             </tr>
         {% endfor %}

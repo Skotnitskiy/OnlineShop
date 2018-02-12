@@ -52,3 +52,19 @@ def cart(request):
             return render(request, 'product/cart.html', {'orders': orders, 'total': sum(orders)})
         else:
             return render(request, 'product/cart.html')
+
+
+def delete_from_cart(request):
+    if request.method == 'POST':
+        p_id = request.POST.get('p_id')
+        products = request.session.get('products')
+        if products:
+            products.pop(p_id)
+            request.session['products'] = products
+    return HttpResponseRedirect('/cart')
+
+
+def add_to_cart(request):
+    if request.method == 'POST':
+        add_product_to_session(request, request.POST['p_id'])
+    return HttpResponseRedirect('/cart')
