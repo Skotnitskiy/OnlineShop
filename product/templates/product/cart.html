@@ -45,5 +45,15 @@
             <th>{{ total }}</th>
             <td></td>
         </tr>
-    </table>
+    </table> <br/>
+    <h3>Checkout:</h3>
+    <div class="col-xs-4">
+        <table class="table table-hover">
+            <form action="{% url 'product:cart' %}" method="POST">
+                {% csrf_token %}
+                {{ orderForm.as_table }}
+                <th><td><button type="submit" class="btn-success">Checkout</button></td></th>
+            </form>
+        </table>
+    </div>
 {% endblock %}

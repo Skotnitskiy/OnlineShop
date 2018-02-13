@@ -35,7 +35,16 @@ class Product(models.Model):
         return self.title
 
 
+class OrderDetails(models.Model):
+    full_name = models.CharField(max_length=200)
+    email = models.EmailField()
+    city = models.CharField(max_length=100)
+    phone = models.CharField(max_length=12)
+
+
 class Order(models.Model):
+    order_details = models.ForeignKey(OrderDetails, default=None)
+
     product_id = models.IntegerField()
     title = models.CharField(max_length=200)
     description = models.TextField()

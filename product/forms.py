@@ -1,5 +1,7 @@
 from django import forms
 
+from product.models import OrderDetails
+
 
 class AddProductForm(forms.Form):
     next = forms.CharField(widget=forms.HiddenInput())
@@ -9,3 +11,9 @@ class AddProductForm(forms.Form):
 
 class DelProductForm(forms.Form):
     product_id = forms.CharField(widget=forms.HiddenInput())
+
+
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = OrderDetails
+        fields = '__all__'

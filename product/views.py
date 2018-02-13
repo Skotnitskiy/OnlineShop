@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.contrib import messages
 from product.models import Product, Subcategory, Order
-from product.forms import AddProductForm, DelProductForm
+from product.forms import AddProductForm, DelProductForm, OrderForm
 
 
 def index(request):
@@ -56,9 +56,10 @@ def cart(request):
                 order = Order(product_id=product.id, title=product.title, description=product.description,
                               price=product.price, quantity=ses_products[s_product_id])
                 orders.append(order)
-            print()
+            order_details_form = OrderForm()
+            context = {'orders': orders, 'total': sum(orders), 'orderForm': order_details_form}
 
-            return render(request, 'product/cart.html', {'orders': orders, 'total': sum(orders)})
+            return render(request, 'product/cart.html', context)
         else:
             return render(request, 'product/cart.html')
 
