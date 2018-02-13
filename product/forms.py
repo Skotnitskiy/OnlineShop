@@ -1,0 +1,11 @@
+from django import forms
+
+
+class AddProductForm(forms.Form):
+    next = forms.CharField(widget=forms.HiddenInput())
+    product_id = forms.CharField(widget=forms.HiddenInput())
+    quantity = forms.IntegerField(min_value=1)
+
+
+class DelProductForm(forms.Form):
+    product_id = forms.CharField(widget=forms.HiddenInput())

@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.contrib import messages
 from product.models import Product, Subcategory, Order
+from product.forms import AddProductForm, DelProductForm
 
 
 def index(request):
@@ -18,26 +19,34 @@ def subcategory_product(request, id):
 
 
 def product_details(request, id):
+    init_data = {'next': request.path,
+                 'product_id': id}
+    add_product_form = AddProductForm(initial=init_data)
     context = {
-        'product': get_object_or_404(Product, id=id)
+        'product': get_object_or_404(Product, id=id),
+        'form': add_product_form
     }
     return render(request, 'product/product-details.html', context)
 
 
-def add_product_to_session(request, p_id):
+def add_product_to_session(request, add_product_form):
     request.session.modified = True
     if 'products' not in request.session:
         request.session['products'] = {}
-    request.session['products'].update({p_id: request.POST['quantity']})
+    if add_product_form.is_valid():
+        quantity = add_product_form.cleaned_data['quantity']
+        p_id = add_product_form.cleaned_data['product_id']
+        request.session['products'].update({p_id: quantity})
     messages.info(request, 'Added to cart!')
 
 
 def cart(request):
     if request.method == 'POST':
-        next_page = request.POST.get('next', '/')
-        p_id = request.POST.get('product_id')
-        add_product_to_session(request, p_id)
-        return HttpResponseRedirect(next_page)
+        add_product_form = AddProductForm(request.POST)
+        if add_product_form.is_valid():
+            next_page = add_product_form.cleaned_data['next']
+            add_product_to_session(request, add_product_form)
+            return HttpResponseRedirect(next_page)
     else:
         if request.session.get('products'):
             ses_products = request.session['products']
@@ -56,15 +65,18 @@ def cart(request):
 
 def delete_from_cart(request):
     if request.method == 'POST':
-        p_id = request.POST.get('p_id')
-        products = request.session.get('products')
-        if products:
-            products.pop(p_id)
-            request.session['products'] = products
+        del_product_form = DelProductForm(request.POST)
+        if del_product_form.is_valid():
+            p_id = del_product_form.cleaned_data['product_id']
+            products = request.session.get('products')
+            if products:
+                products.pop(p_id)
+                request.session['products'] = products
     return HttpResponseRedirect('/cart')
 
 
 def add_to_cart(request):
     if request.method == 'POST':
-        add_product_to_session(request, request.POST['p_id'])
+        add_product_form = AddProductForm(request.POST)
+        add_product_to_session(request, add_product_form)
     return HttpResponseRedirect('/cart')

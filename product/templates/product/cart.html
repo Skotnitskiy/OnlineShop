@@ -19,7 +19,8 @@
                 <td>
                     <form action="{% url 'product:add-to-cart' %}" method="POST">
                         {% csrf_token %}
-                        <input type="hidden" name="p_id" value="{{ order.product_id }}">
+                        <input type="hidden" name="product_id" value="{{ order.product_id }}">
+                        <input type="hidden" name="next" value="{{ request.path }}">
                         <input type="number" title="Quantity" min="1" class="form-control"
                                name="quantity" value="{{ order.quantity }}">
                         <button type="submit" class="btn-success">Update</button>
@@ -32,7 +33,7 @@
                     {{ order.price }}
                     <form action="{% url 'product:delete-from-cart' %}" method="POST">
                         {% csrf_token %}
-                        <input type="hidden" name="p_id" value="{{ order.product_id }}">
+                        <input type="hidden" name="product_id" value="{{ order.product_id }}">
                         <button type="submit" class="btn-danger">-</button>
                     </form>
                 </td>
