@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.contrib import messages
-from product.models import Product, Subcategory, Order
+from product.models import Product, Subcategory, Order, OrderDetails
 from product.forms import AddProductForm, DelProductForm, OrderForm
 
 
@@ -40,25 +40,65 @@ def add_product_to_session(request, add_product_form):
     messages.info(request, 'Added to cart!')
 
 
+def get_orders(session, **kwargs):
+    ses_products = session['products']
+    orders = []
+    for s_product_id in ses_products:
+        product = Product.objects.get(pk=s_product_id)
+        if kwargs:
+            order = Order(order_details=kwargs.get('order_details'), product_id=product.id, title=product.title,
+                          description=product.description, price=product.price, quantity=ses_products[s_product_id])
+        else:
+            order = Order(product_id=product.id, title=product.title, description=product.description,
+                          price=product.price, quantity=ses_products[s_product_id])
+        orders.append(order)
+    return orders
+
+
+def checkout(request):
+    checkout_form = OrderForm(request.POST)
+    if checkout_form.is_valid():
+        order_details = OrderDetails(full_name=checkout_form.cleaned_data['full_name'],
+                                     email=checkout_form.cleaned_data['email'],
+                                     city=checkout_form.cleaned_data['city'],
+                                     phone=checkout_form.cleaned_data['phone'])
+        unique_od = OrderDetails.objects.filter(email=order_details.email)
+        if not unique_od:  # if this email not exists save all record
+            order_details.save()
+        else:  # else update record
+            unique_od.update(full_name=order_details.full_name,
+                             city=order_details.city,
+                             phone=order_details.phone)
+
+        order_details = OrderDetails.objects.get(email=order_details.email)
+
+        # Get orders to save them and link order_details
+        orders = get_orders(request.session, order_details=order_details)
+        for order in orders:
+            order.save()
+        request.session['products'] = {}
+        messages.info(request, 'Order saved!')
+
+
 def cart(request):
     if request.method == 'POST':
-        add_product_form = AddProductForm(request.POST)
-        if add_product_form.is_valid():
-            next_page = add_product_form.cleaned_data['next']
-            add_product_to_session(request, add_product_form)
-            return HttpResponseRedirect(next_page)
+        if request.POST.get('city'):  # if received request from checkout form
+            checkout(request)
+            return HttpResponseRedirect('/cart')
+        else:
+            add_product_form = AddProductForm(request.POST)
+            if add_product_form.is_valid():
+                next_page = add_product_form.cleaned_data['next']
+                add_product_to_session(request, add_product_form)
+                return HttpResponseRedirect(next_page)
+            else:
+                messages.info(request, 'Cart is empty!')
+                return HttpResponseRedirect('/cart')
     else:
         if request.session.get('products'):
-            ses_products = request.session['products']
-            orders = []
-            for s_product_id in ses_products:
-                product = Product.objects.get(pk=s_product_id)
-                order = Order(product_id=product.id, title=product.title, description=product.description,
-                              price=product.price, quantity=ses_products[s_product_id])
-                orders.append(order)
+            orders = get_orders(request.session)
             order_details_form = OrderForm()
             context = {'orders': orders, 'total': sum(orders), 'orderForm': order_details_form}
-
             return render(request, 'product/cart.html', context)
         else:
             return render(request, 'product/cart.html')
