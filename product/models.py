@@ -60,3 +60,7 @@ class Order(models.Model):
 
     def __radd__(self, other):
         return other + self.cost
+
+
+class ExchangeRate(models.Model):
+    UAH = 26.51  # 1USD
