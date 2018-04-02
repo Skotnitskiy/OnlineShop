@@ -38,6 +38,8 @@ class Product(models.Model):
     description = models.TextField()
     price = models.FloatField(default=0.0)
     on_the_main = models.BooleanField(default=False)
+    img_url = models.URLField()
+    rating = models.IntegerField(default=0)
 
     def __str__(self):
         return self.title
@@ -71,7 +73,7 @@ class Order(models.Model):
 
 
 class ExchangeRate(models.Model):
-    currency = models.FloatField()  # 1USD
+    currency = models.FloatField()
     currency_name = models.CharField(max_length=5)
 
     def __str__(self):
