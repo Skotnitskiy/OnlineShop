@@ -23,8 +23,16 @@ class Subcategory(models.Model):
         return self.title
 
 
+class Producer(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+
+
 class Product(models.Model):
     subcategory = models.ManyToManyField(Subcategory)
+    producer = models.ForeignKey(Producer, null=True, on_delete=models.SET_NULL)
 
     title = models.CharField(max_length=200)
     description = models.TextField()
@@ -63,15 +71,9 @@ class Order(models.Model):
 
 
 class ExchangeRate(models.Model):
-    UAH = models.FloatField()  # 1USD
+    currency = models.FloatField()  # 1USD
+    currency_name = models.CharField(max_length=5)
 
     def __str__(self):
-        return self.UAH
+        return self.currency_name
 
-
-class Producer(models.Model):
-    product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
-    name = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.name
