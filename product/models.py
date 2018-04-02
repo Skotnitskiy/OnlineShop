@@ -63,7 +63,7 @@ class Order(models.Model):
 
 
 class ExchangeRate(models.Model):
-    UAH = 26.51  # 1USD
+    UAH = models.FloatField()  # 1USD
 
     def __str__(self):
         return self.UAH
