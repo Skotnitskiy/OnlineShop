@@ -64,3 +64,8 @@ class Order(models.Model):
 
 class ExchangeRate(models.Model):
     UAH = 26.51  # 1USD
+
+
+class Producer(models.Model):
+    product = models.ForeignKey(Product, null=True, on_delete=models.SET_NULL)
+    name = models.CharField(max_length=100)
