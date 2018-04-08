@@ -30,7 +30,7 @@ SECRET_KEY = '$6a)+zt=(fj5u19-im01($k0sf_$zt5ng7-*^6xyqm@mnr!jo7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
