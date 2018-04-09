@@ -15,7 +15,7 @@ class Subcategory(models.Model):
     category = models.ManyToManyField(Category,
                                       related_name='subcategories')
     title = models.CharField(max_length=200)
-    meta_kw = models.CharField()
+    meta_kw = models.CharField
 
     class Meta:
         verbose_name_plural = 'Subcategories'
@@ -41,7 +41,7 @@ class Product(models.Model):
     on_the_main = models.BooleanField(default=False)
     img_url = models.URLField()
     rating = models.IntegerField(default=0)
-    meta_kw = models.CharField()
+    meta_kw = models.CharField
 
     def __str__(self):
         return self.title
