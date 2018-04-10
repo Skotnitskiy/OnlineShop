@@ -1,12 +1,13 @@
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.contrib import messages
-from product.models import Product, Subcategory, Order, OrderDetails
+from product.models import Product, Subcategory, Order, OrderDetails, Category
 from product.forms import AddProductForm, DelProductForm, OrderForm
 
 
 def index(request):
     context = {
-        'products': Product.objects.filter(on_the_main=True)
+        'products': Product.objects.filter(on_the_main=True),
+        'categories': Category.objects.all()
     }
     return render(request, 'product/index.html', context)
 

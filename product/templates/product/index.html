@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
-
+{% block extra_head_tags %}
+    <meta name="keywords" content="{% for category in categories %} {{ category }},{% endfor %}"/>
+{% endblock %}
 {% block title %}Main Products{% endblock %}
 
 {% block content %}
