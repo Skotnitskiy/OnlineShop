@@ -1,5 +1,11 @@
 {% extends 'base.html' %}
 
+{% block extra_head_tags %}
+    <meta name="keywords" {% if subcategory.meta_kw %} content="{{ subcategory.meta_kw }}"
+    {% else %}
+          content="Buy {{ subcategory.title }}"
+    {% endif %}/>
+{% endblock %}
 {% block title %}{{ subcategory }}{% endblock %}
 
 
