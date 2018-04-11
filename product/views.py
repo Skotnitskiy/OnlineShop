@@ -7,7 +7,7 @@ from product.forms import AddProductForm, DelProductForm, OrderForm
 def index(request):
     add_product_form = AddProductForm()
     context = {
-        'products': Product.objects.filter(on_the_main=True).order_by('-rating'),
+        'products': Product.objects.filter(on_the_main=True),
         'categories': Category.objects.all(),
         'form': add_product_form
     }
