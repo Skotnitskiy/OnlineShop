@@ -16,7 +16,8 @@ def index(request):
 
 def subcategory_product(request, id):
     context = {
-        'subcategory': get_object_or_404(Subcategory, id=id)
+        'subcategory': get_object_or_404(Subcategory, id=id),
+        'next': '/{}'.format(id)
     }
     return render(request, 'product/subcategory-product.html', context)
 
@@ -120,7 +121,9 @@ def delete_from_cart(request):
 
 
 def add_to_cart(request):
+    nxt = '/'
     if request.method == 'POST':
         add_product_form = AddProductForm(request.POST)
+        nxt = add_product_form['next'].data
         add_product_to_session(request, add_product_form)
-    return HttpResponseRedirect('/cart')
+    return HttpResponseRedirect(nxt)
