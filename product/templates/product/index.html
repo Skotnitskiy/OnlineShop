@@ -5,9 +5,18 @@
 {% block title %}Main Products{% endblock %}
 
 {% block content %}
-    {% for product in products %}
-        {{ product.title }} <br>
+    <table class="table">
+        {% for product in products %}
+            <tr>
+                <td>
+                    <img src="{{ product.img_url }} "/>
+                    <br>{{ product.title }}
+                    <br><b>Price: </b>{{ product.price }}
+                    <br><b>Rating: </b>{{ product.rating }}<br>
+                </td>
+            </tr>
         {% empty %}
-        No products!
-    {% endfor %}
+            No products!
+        {% endfor %}
+    </table>
 {% endblock %}
