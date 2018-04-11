@@ -18,7 +18,7 @@ def index(request):
 
 
 def multiply(value, arg):
-    return value*arg
+    return round(value*arg, 2)
 
 
 register.filter('multiply', multiply)
