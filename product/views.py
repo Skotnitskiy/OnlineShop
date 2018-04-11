@@ -22,12 +22,20 @@ def subcategory_product(request, id):
     return render(request, 'product/subcategory-product.html', context)
 
 
+def increase_product_rating(id):
+    product = get_object_or_404(Product, id=id)
+    product.rating += 1
+    product.save()
+    return product
+
+
 def product_details(request, id):
     init_data = {'next': request.path,
                  'product_id': id}
     add_product_form = AddProductForm(initial=init_data)
+    product = increase_product_rating(id)
     context = {
-        'product': get_object_or_404(Product, id=id),
+        'product': product,
         'form': add_product_form
     }
     return render(request, 'product/product-details.html', context)
