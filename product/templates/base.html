@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   {% block extra_head_tags %}{% endblock %}
+    {% block extra_head_tags %}{% endblock %}
     <meta charset="UTF-8">
 
     <!-- Jquery -->
@@ -19,36 +19,37 @@
     <title>{% block title %}{% endblock %}</title>
 </head>
 <body>
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
             <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
+        {% endfor %}
+    </ul>
+{% endif %}
 
-    <div class="navbar navbar-default" role="navigation">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="/">My shop</a>
-        </div>
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="{% url 'product:cart' %}">Cart</a></li>
-
-                {% for category in menu_categories %}
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ category.title }}<b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            {% for subcategory in  category.subcategories.all %}
-                                <li><a href="{% url 'product:subcategory-product' subcategory.id %}">{{ subcategory.title }}</a></li>
-                            {% endfor %}
-                        </ul>
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
+<div class="navbar navbar-default" role="navigation">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="/">My shop</a>
     </div>
+    <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav">
+            <li><a href="{% url 'product:cart' %}">Cart</a></li>
+            {% for category in menu_categories %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{ category.title }}<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        {% for subcategory in  category.subcategories.all %}
+                            <li><a href="{% url '
+                            product:subcategory-product' subcategory.id %}">{{ subcategory.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </li>
+            {% endfor %}
+            <li><a href="{% url 'product:orders' %}">Orders</a></li>
+        </ul>
+    </div>
+</div>
 
-    {% block content %}{% endblock %}
+{% block content %}{% endblock %}
 </body>
 </html>

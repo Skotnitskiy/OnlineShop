@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% block title %}Main Products{% endblock %}
+
+{% block content %}
+    <form action="{% url 'product:orders' %}" method="POST">
+    {% csrf_token %}
+    <input type="email" name="email">
+    <input type="submit" class="btn-success" value="Get orders">
+    </form>
+    {% if orders %}
+    <table class="table">
+        {% for order in orders %}
+            <tr>
+                <td>
+                    <img src="{{ order.img_url }} "/>
+                    <br>{{ order.title }}
+                    <br><b>Price: </b>{{ order.price }}
+                    <br><b>Description: </b>{{ order.description }}
+                </td>
+            </tr>
+        {% empty %}
+            No products!
+        {% endfor %}
+    </table>
+    {% endif %}
+{% endblock %}

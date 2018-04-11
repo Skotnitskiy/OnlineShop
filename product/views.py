@@ -139,3 +139,17 @@ def add_to_cart(request):
         nxt = add_product_form['next'].data
         add_product_to_session(request, add_product_form)
     return HttpResponseRedirect(nxt)
+
+
+def orders(request):
+    if request.method == 'POST':
+        mail_form = request.POST
+        email = mail_form['email']
+        orders = Order.objects.filter(order_details__email=email)
+        context = {
+            'orders': orders
+        }
+        return render(request, 'product/orders.html', context)
+    else:
+        messages.info(request, 'No orders!')
+        return render(request, 'product/orders.html')

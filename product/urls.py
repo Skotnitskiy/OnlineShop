@@ -1,7 +1,6 @@
 from django.conf.urls import url
 
-from product.views import index, subcategory_product, product_details, cart, delete_from_cart, add_to_cart
-
+from product.views import index, subcategory_product, product_details, cart, delete_from_cart, add_to_cart, orders
 
 app_name = 'product'
 urlpatterns = [
@@ -13,4 +12,5 @@ urlpatterns = [
     url(r'^cart/$', cart, name='cart'),
     url(r'^cart/delete/', delete_from_cart, name='delete-from-cart'),
     url(r'^cart/add/', add_to_cart, name='add-to-cart'),
+    url(r'^orders$', orders, name='orders'),
 ]
