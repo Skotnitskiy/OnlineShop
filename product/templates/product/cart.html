@@ -14,7 +14,11 @@
         {% for order in orders %}
             <tr>
                 <td>
-                    {{ order.title }}
+                    <img src="{{ order.img_url }} "/>
+                    <br> {{ order.title }} <br>
+                    <br><b>Price: </b>{{ order.price }}
+                    <br><b>Rating: </b>{{ order.rating }}<br>
+                    <br><b>Description: </b>{{ order.description }}<br>
                 </td>
                 <td>
                     <form action="{% url 'product:add-to-cart' %}" method="POST">

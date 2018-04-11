@@ -62,6 +62,7 @@ class Order(models.Model):
     description = models.TextField()
     price = models.FloatField(default=0.0)
     quantity = models.IntegerField(default=1)
+    img_url = models.URLField()
 
     @property
     def cost(self):

@@ -51,10 +51,11 @@ def get_orders(session, **kwargs):
         product = Product.objects.get(pk=s_product_id)
         if kwargs:
             order = Order(order_details=kwargs.get('order_details'), product_id=product.id, title=product.title,
-                          description=product.description, price=product.price, quantity=ses_products[s_product_id])
+                          description=product.description, price=product.price, quantity=ses_products[s_product_id],
+                          img_url=product.img_url)
         else:
             order = Order(product_id=product.id, title=product.title, description=product.description,
-                          price=product.price, quantity=ses_products[s_product_id])
+                          price=product.price, quantity=ses_products[s_product_id], img_url=product.img_url)
         orders.append(order)
     return orders
 
