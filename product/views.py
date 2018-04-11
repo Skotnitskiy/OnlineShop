@@ -4,6 +4,8 @@ from django.template.defaultfilters import register
 
 from product.models import Product, Subcategory, Order, OrderDetails, Category, ExchangeRate
 from product.forms import AddProductForm, DelProductForm, OrderForm
+import smtplib
+from email.message import EmailMessage
 
 
 def index(request):
@@ -83,11 +85,47 @@ def get_orders(session, **kwargs):
     return orders
 
 
+def send_report(rep):
+    gmail_user = 'geekpy.test@gmail.com'
+    gmail_password = 'qwerty123Ss'
+
+    msg = EmailMessage()
+    you = 'one2011@yandex.ua'
+    msg['Subject'] = 'Report Sergey Skotnitskiy'
+    msg['From'] = gmail_user
+    msg['To'] = you
+    msg.set_content(rep)
+    msg.set_type('text/html')
+
+    s = smtplib.SMTP_SSL('smtp.gmail.com', 465)
+    s.login(gmail_user, gmail_password)
+    s.sendmail(gmail_user, [you], msg.as_string())
+    s.close()
+
+
+def report(orders):
+    html = '<table border=1>' \
+           '<th>Title</th>' \
+           '<th>Price</th>' \
+           '<th>Description</th>' \
+           '<th>Quantity</th>' \
+           '{} </table>'
+    rows = ''
+    for order in orders:
+        rows += '<tr><td>{}<br> <img src="{}"</td>'.format(order.title, order.img_url)
+        rows += '<td>{} USD</td>'.format(order.price)
+        rows += '<td>{}</td></tr>'.format(order.description)
+        rows += '<td>{}</td></tr>'.format(order.quantity)
+    return html.format(rows)
+
+
 def checkout(request):
     checkout_form = OrderForm(request.POST)
+    email = ''
     if checkout_form.is_valid():
+        email = checkout_form.cleaned_data['email']
         order_details = OrderDetails(full_name=checkout_form.cleaned_data['full_name'],
-                                     email=checkout_form.cleaned_data['email'],
+                                     email= email,
                                      city=checkout_form.cleaned_data['city'],
                                      phone=checkout_form.cleaned_data['phone'])
         unique_od = OrderDetails.objects.filter(email=order_details.email)
@@ -106,6 +144,9 @@ def checkout(request):
             order.save()
         request.session['products'] = {}
         messages.info(request, 'Order saved!')
+        orders = Order.objects.filter(order_details__email=email)
+        rep = report(orders)
+        send_report(rep)
 
 
 def cart(request):
