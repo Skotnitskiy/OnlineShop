@@ -48,8 +48,11 @@ def add_product_to_session(request, add_product_form):
     if add_product_form.is_valid():
         quantity = add_product_form.cleaned_data['quantity']
         p_id = add_product_form.cleaned_data['product_id']
-        request.session['products'].update({p_id: quantity})
-    messages.info(request, 'Added to cart!')
+        if quantity <= 10:
+            request.session['products'].update({p_id: quantity})
+            messages.info(request, 'Added to cart!')
+        else:
+            messages.error(request, 'The goods must be no more than 10')
 
 
 def get_orders(session, **kwargs):
