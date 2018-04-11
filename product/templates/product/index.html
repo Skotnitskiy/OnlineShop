@@ -11,7 +11,7 @@
                 <td>
                     <img src="{{ product.img_url }} "/>
                     <br><a href="{% url 'product:product-details' product.id %}">{{ product.title }}</a>
-                    <br><b>Price: </b>{{ product.price }}
+                    <br><b>Price: </b>{{ product.price }} USD / {{ product.price|multiply:uah }} UAH
                     <br><b>Rating: </b>{{ product.rating }}
                     <form action="{% url 'product:add-to-cart' %}" method="POST">
                         {% csrf_token %}

@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, HttpResponseRedirect
 from django.contrib import messages
-from product.models import Product, Subcategory, Order, OrderDetails, Category
+from django.template.defaultfilters import register
+
+from product.models import Product, Subcategory, Order, OrderDetails, Category, ExchangeRate
 from product.forms import AddProductForm, DelProductForm, OrderForm
 
 
@@ -9,15 +11,24 @@ def index(request):
     context = {
         'products': Product.objects.filter(on_the_main=True),
         'categories': Category.objects.all(),
-        'form': add_product_form
+        'form': add_product_form,
+        'uah': ExchangeRate.objects.get(currency_name='UAH').currency
     }
     return render(request, 'product/index.html', context)
+
+
+def multiply(value, arg):
+    return value*arg
+
+
+register.filter('multiply', multiply)
 
 
 def subcategory_product(request, id):
     context = {
         'subcategory': get_object_or_404(Subcategory, id=id),
-        'next': '/{}'.format(id)
+        'next': '/{}'.format(id),
+        'uah': ExchangeRate.objects.get(currency_name='UAH').currency
     }
     return render(request, 'product/subcategory-product.html', context)
 
@@ -36,7 +47,8 @@ def product_details(request, id):
     product = increase_product_rating(id)
     context = {
         'product': product,
-        'form': add_product_form
+        'form': add_product_form,
+        'uah': ExchangeRate.objects.get(currency_name='UAH').currency * product.price
     }
     return render(request, 'product/product-details.html', context)
 
@@ -97,6 +109,7 @@ def checkout(request):
 
 
 def cart(request):
+    uah = ExchangeRate.objects.get(currency_name='UAH').currency
     if request.method == 'POST':
         if request.POST.get('city'):  # if received request from checkout form
             checkout(request)
@@ -114,7 +127,11 @@ def cart(request):
         if request.session.get('products'):
             orders = get_orders(request.session)
             order_details_form = OrderForm()
-            context = {'orders': orders, 'total': sum(orders), 'orderForm': order_details_form}
+            context = {'orders': orders,
+                       'total': sum(orders),
+                       'orderForm': order_details_form,
+                       'uah': uah
+                       }
             return render(request, 'product/cart.html', context)
         else:
             return render(request, 'product/cart.html')

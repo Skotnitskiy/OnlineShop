@@ -16,7 +16,7 @@
                 <td>
                     <img src="{{ order.img_url }} "/>
                     <br> {{ order.title }} <br>
-                    <br><b>Price: </b>{{ order.price }}
+                    <br><b>Price: </b>{{ order.price }} USD / {% if uah %}{{ order.price|multiply:uah }} UAH {% endif %}
                     <br><b>Rating: </b>{{ order.rating }}<br>
                     <br><b>Description: </b>{{ order.description }}<br>
                 </td>
@@ -31,10 +31,10 @@
                     </form>
                 </td>
                 <td>
-                    {{ order.cost }}
+                    {{ order.cost }} USD / {% if uah %}{{ order.price|multiply:uah }} UAH {% endif %}
                 </td>
                 <td>
-                    {{ order.price }}
+                    {{ order.price }} USD /{% if uah %}{{ order.price|multiply:uah }} UAH {% endif %}
                     <form action="{% url 'product:delete-from-cart' %}" method="POST">
                         {% csrf_token %}
                         <input type="hidden" name="product_id" value="{{ order.product_id }}">
@@ -46,7 +46,7 @@
         <tr>
             <th>TOTAL:</th>
             <td></td>
-            <th>{{ total }}</th>
+            <th>{{ total }} USD / {% if uah %}{{ total|multiply:uah }} UAH {% endif %}</th>
             <td></td>
         </tr>
     </table> <br/>
