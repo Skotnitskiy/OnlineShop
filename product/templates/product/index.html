@@ -10,9 +10,17 @@
             <tr>
                 <td>
                     <img src="{{ product.img_url }} "/>
-                    <br>{{ product.title }}
+                    <br><a href="{% url 'product:product-details' product.id %}">{{ product.title }}</a>
                     <br><b>Price: </b>{{ product.price }}
-                    <br><b>Rating: </b>{{ product.rating }}<br>
+                    <br><b>Rating: </b>{{ product.rating }}
+                    <form action="{% url 'product:add-to-cart' %}" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="product_id" value="{{ product.id }}">
+                        <input type="hidden" name="next" value="{{ request.path }}">
+                        <input type="number" title="Quantity" min="1"
+                               class="col-xs-1" name="quantity" required="True">
+                        <button type="submit" class="btn-success">Add to cart</button>
+                    </form>
                 </td>
             </tr>
         {% empty %}

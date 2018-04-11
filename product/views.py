@@ -5,9 +5,11 @@ from product.forms import AddProductForm, DelProductForm, OrderForm
 
 
 def index(request):
+    add_product_form = AddProductForm()
     context = {
         'products': Product.objects.filter(on_the_main=True),
-        'categories': Category.objects.all()
+        'categories': Category.objects.all(),
+        'form': add_product_form
     }
     return render(request, 'product/index.html', context)
 

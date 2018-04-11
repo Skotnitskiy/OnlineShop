@@ -9,13 +9,17 @@
 
 
 {% block content %}
-    {{ product.title }}
-
-    <form action="{% url 'product:cart' %}" method="POST">
+    <img src="{{ product.img_url }} "/>
+    <br><a href="{% url 'product:product-details' product.id %}">{{ product.title }}</a> <br>
+    <br><b>Price: </b>{{ product.price }}
+    <br><b>Rating: </b>{{ product.rating }}<br>
+    <br><b>Description: </b>{{ product.description }}<br>
+    <form action="{% url 'product:add-to-cart' %}" method="POST">
         {% csrf_token %}
-        <div class="col-xs-2">
-            {{ form }}
-            <button type="submit" class="btn-success">Add to cart!</button>
-        </div>
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        <input type="hidden" name="next" value="{{ request.path }}">
+        <input type="number" title="Quantity" min="1"
+               class="col-xs-1" name="quantity" required="True">
+        <button type="submit" class="btn-success">Add to cart</button>
     </form>
 {% endblock %}
